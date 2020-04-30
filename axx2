@@ -219,7 +219,7 @@ fi
 
 
 
-if port=22; then
+elif port=22; then
 
 if scp -i /root/.ssh/id_rsa -P $port /root/shells/${server_id}.txt root@${server}:~/newshells.txt; then
 echo "Шеллы успешно загружены на ${server}"
