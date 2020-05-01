@@ -161,21 +161,18 @@ generate_and_copy_ssh_key(){
 
 while IFS=":" read server port passwordserver server_id; do
 
-echo "Generating key for mainserver"
-echo "================================="
-sleep 1
-if [ ! -f /root/.ssh/id_rsa ]; then
-echo "Локальный ключ не существует. Генерируем новый."
+ if [ ! -f /root/.ssh/id_rsa ]; then
+echo "Локальный ключ не существует. Генерируем ключ."
 ssh-keygen -t rsa -N "" -f /root/.ssh/id_rsa
 chmod 0400 /root/.ssh/id_rsa
-else
+ else
 echo "Локальный ключ существует"
-fi
+ fi
 
-if ssh -p $port -i /root/.ssh/id_rsa -o StrictHostKeyChecking=no root@${server}; then
+ if ssh -p $port -i /root/.ssh/id_rsa -o StrictHostKeyChecking=no root@${server}; then
 echo "Ключ уже был загружен ранее на ${server} "
 continue;
-else 
+ else 
 
 echo ""
 echo "Копируем ключ на ${server}"
@@ -187,7 +184,7 @@ sshpass -p ${passwordserver} ssh-copy-id -o StrictHostKeyChecking=no -i ~/.ssh/i
 
 sleep 1
 
-fi
+ fi
 
 done < /root/main_servers_list
 }
