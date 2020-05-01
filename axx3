@@ -172,8 +172,6 @@ else
 echo "Локальный ключ существует"
 fi
 
-if 
-
 if ssh -p $port -i /root/.ssh/id_rsa -o StrictHostKeyChecking=no root@${server}; then
 echo "Ключ уже был загружен ранее на ${server} "
 continue;
