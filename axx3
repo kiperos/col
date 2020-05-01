@@ -169,7 +169,7 @@ chmod 0400 /root/.ssh/id_rsa
 echo "Локальный ключ существует"
  fi
 
- if ssh -tt -p $port -i /root/.ssh/id_rsa -o StrictHostKeyChecking=no root@${server}; then
+ if ssh -T -p $port -i /root/.ssh/id_rsa -o StrictHostKeyChecking=no root@${server}; then
 echo "Ключ уже был загружен ранее на ${server} "
 continue;
  else 
